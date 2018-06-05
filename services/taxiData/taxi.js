@@ -29,6 +29,7 @@ const getPriceEstimate = async (start_latitude, start_longitude, end_latitude, e
   return new Promise(async (resolve, reject) => {
     const distanceAndTime = await getDistanceAndTime(start_latitude, start_longitude, end_latitude, end_longitude);
     const {distance, duration} = {...distanceAndTime};
+    console.log(process.cwd())
     const pathToPythonScript = process.cwd() + '/services/taxiData/taxi_price_predictor.py'
     const model = spawn('python', [pathToPythonScript, distance, duration, start_longitude, start_latitude, 1]);
     model.stdout.on('data', function(data) {

@@ -11,6 +11,8 @@ import pickle
 import pandas as pd
 import numpy as np
 import sys
+import os
+cwd = os.getcwd()
 
 #input parameters
 trip_distance = float(sys.argv[1])
@@ -26,7 +28,8 @@ cols = ['trip_distance', 'pickup_longitude', 'pickup_latitude', 'rate_code', 'di
 df = df[cols]
 
 #loading model
-loaded_model = pickle.load(open('/Users/sambhavanand/Desktop/projects/hackbar/nyc-taxi-data/taxi-backend/services/taxiData/taxiModelddsb.pickle',"rb"))
+pickleDir = cwd+'/services/taxiData/taxiModelddsb.pickle'
+loaded_model = pickle.load(open(pickleDir,"rb"))
 
 #regress based on input parameters
 output = loaded_model.predict(data=df)

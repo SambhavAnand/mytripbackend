@@ -11,7 +11,10 @@ router.get('/price', (req, res) => {
 } = { ...req.query};
   getPriceEstimate(start_latitude, start_longitude, end_latitude, end_longitude)
     .then(result=>res.send(result))
-    .catch(error=>res.sendStatus(500));
+    .catch(error=>{
+      console.log('Error at getPriceEstimate',error)
+      res.sendStatus(500)
+    });
 });
 
 module.exports = router;
