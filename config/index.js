@@ -1,3 +1,3 @@
-module.exports.UBER_SERVER_TOKEN="vBOgOxC-ZJpKIcfYqiEAhHU8k5bIscXR7de7BaJe";
-module.exports.LYFT_SERVER_TOKEN="ZTmFL2cOM0SZPiOyM9i5KXSuuSoSo9T/l9zAnVjwDpi2VWQgy7smAh06J8imRmNbG7HEE57Ydk29+1qrR+Jobsi8SLpA3D4IB2lXxmxKvU63pSQXbDIVgV0=";
+module.exports.UBER_SERVER_TOKEN="IXEbhdrYSssIiZwY9LTOtZfg95vUskecNVe-A7LQ";
+module.exports.LYFT_SERVER_TOKEN="OYHVujIDxdynRHb+xrNSVsTHF5Pd7ET+loQ0OzJUk1Yue+GQ2pwpOCO9Hq8y7DwjmWFm+wrPQw/uGakDeWSoKRFq419Vwb0I/Mme8lejRKqN9TWbdjBlt+A=";
 module.exports.GOOGLE_API_KEY="AIzaSyDw5XAceefaWiQT1dCdfkF_XXBDruTbdw0";
