@@ -9,6 +9,25 @@ const googleMapsClient = require('@google/maps').createClient({
 });
 
 
+const checkNewYork = (start_latitude, end_latitude) => {
+  return new Promise((resolve, reject) => {
+    googleMapsClient.reverseGeocode({
+      latlng: `${start_latitude},${end_latitude}`
+    }).asPromise()
+    .then(res=>res.json.results)
+    .then(results=>{
+      let flag=false;
+      results.map(result=>{
+        if(result.types[0]==='locality') {
+          if(result.address_components[0].short_name==='New York') flag = true;
+        }
+      })
+      return flag;
+    })
+    .then(flag=>resolve(flag))
+    .catch(error=>reject(error));
+  });
+};
 const getDistanceAndTime = (start_latitude, start_longitude, end_latitude, end_longitude) => {
   return new Promise((resolve, reject) => {
     googleMapsClient.distanceMatrix({
@@ -36,14 +55,19 @@ const getPriceEstimate = async (start_latitude, start_longitude, end_latitude, e
     const pricePromises = [
       getUberPrice(start_latitude, start_longitude, end_latitude, end_longitude),
       getLyftPrice(start_latitude, start_longitude, end_latitude, end_longitude),
-      getJunoPrice(start_latitude, start_longitude, end_latitude, end_longitude, distance*1609.4,duration),//Convert to meters for Juno
-      getTaxiPrice(start_latitude, start_longitude, end_latitude, end_longitude, distance, duration)
+
     ];
+    let isStartNewYork = await checkNewYork(start_latitude, start_longitude);
+    let isEndNewYork = await checkNewYork(end_latitude, end_longitude);
+    if(isStartNewYork && isEndNewYork) {
+      pricePromises.push(getJunoPrice(start_latitude, start_longitude, end_latitude, end_longitude, distance*1609.4,duration),//Convert to meters for Juno
+      getTaxiPrice(start_latitude, start_longitude, end_latitude, end_longitude, distance, duration));
+    }
+    const isNewYork = isStartNewYork && isEndNewYork;
     Promise.all(pricePromises)
     .then(prices=>{
       const uberPrices = prices[0].prices;
       const lyftPrices = prices[1].cost_estimates;
-      const junoPrices = prices[2];
       result['uber'] = uberPrices.map(product => {
         return {
           rideType: product.localized_display_name,
@@ -64,14 +88,15 @@ const getPriceEstimate = async (start_latitude, start_longitude, end_latitude, e
           currency: product.currency
         }
       });
-      result['juno'] = junoPrices;
-      result['taxi'] = prices[3];
+      if(isNewYork) {
+        result['juno'] = prices[2];
+        result['taxi'] = prices[3]
+      }
       resolve(result)
     })
     .catch(error=> reject(error));
   });
 }
-
 module.exports = {
   getPriceEstimate: getPriceEstimate,
 }
