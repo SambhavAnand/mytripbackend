@@ -58,12 +58,10 @@ const getPriceEstimate = async (start_latitude, start_longitude, end_latitude, e
 
     ];
     let isStartNewYork = await checkNewYork(start_latitude, start_longitude);
-    let isEndNewYork = await checkNewYork(end_latitude, end_longitude);
-    if(isStartNewYork && isEndNewYork) {
+    if(isStartNewYork) {
       pricePromises.push(getJunoPrice(start_latitude, start_longitude, end_latitude, end_longitude, distance*1609.4,duration),//Convert to meters for Juno
       getTaxiPrice(start_latitude, start_longitude, end_latitude, end_longitude, distance, duration));
     }
-    const isNewYork = isStartNewYork && isEndNewYork;
     Promise.all(pricePromises)
     .then(prices=>{
       const uberPrices = prices[0].prices;
@@ -88,9 +86,9 @@ const getPriceEstimate = async (start_latitude, start_longitude, end_latitude, e
           currency: product.currency
         }
       });
-      if(isNewYork) {
+      if(isStartNewYork) {
         result['juno'] = prices[2];
-        result['taxi'] = prices[3]
+        result['taxi'] = prices[3];
       }
       resolve(result)
     })
