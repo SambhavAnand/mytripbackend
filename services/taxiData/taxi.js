@@ -9,7 +9,8 @@ const getPriceEstimate = async (start_latitude, start_longitude, end_latitude, e
       result+=data;
     });
     model.stdout.on('end', function(data) {
-      resolve(parseFloat(result));
+      result = result.split('\n')
+      resolve(parseFloat(result[1]));
     });
     model.stderr.on('data', function(data) {
       pythonError+=data;
